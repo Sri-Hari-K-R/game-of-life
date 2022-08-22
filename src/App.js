@@ -24,7 +24,18 @@ function App() {
     }
     return rows;
   };
+  const generateRandomGrid = () => {
+    const rows = [];
 
+    for (let i = 0; i < numRows; i++) {
+      rows.push(
+        Array.from(Array(numCols), () => (Math.random() > 0.7 ? 1 : 0))
+      );
+    }
+    return rows;
+  };
+
+  const [darkMode, setDarkMode] = useState(false);
   const [grid, setGrid] = useState(generateEmptyGrid());
   const [running, setRunning] = useState(false);
   const runningRef = useRef(running);
@@ -64,27 +75,77 @@ function App() {
 
   return (
     <>
-      <button
-        onClick={() => {
-          setRunning(!running);
-          if (!running) {
-            runningRef.current = true;
-            runSimulation();
-          }
+      <div
+        className="text-center"
+        style={{
+          backgroundColor: `${darkMode ? "#282c34" : "white"}`,
         }}
       >
-        {running ? "stop" : "start"}
-      </button>
-      <button
-        onClick={() => {
-          setGrid(generateEmptyGrid);
-        }}
-      >
-        clear
-      </button>
+        <button
+          className={`${
+            darkMode ? "btn btn-outline-light" : "btn btn-outline-dark"
+          }`}
+          style={{ margin: "10px" }}
+          onClick={() => {
+            setRunning(!running);
+            if (!running) {
+              runningRef.current = true;
+              runSimulation();
+            }
+          }}
+        >
+          {running ? "stop" : "start"}
+        </button>
+        <button
+          className={`${
+            darkMode ? "btn btn-outline-light" : "btn btn-outline-dark"
+          }`}
+          style={{ margin: "10px" }}
+          onClick={() => {
+            setGrid(generateRandomGrid);
+          }}
+        >
+          random
+        </button>
+        <button
+          className={`${
+            darkMode ? "btn btn-outline-light" : "btn btn-outline-dark"
+          }`}
+          style={{ margin: "10px" }}
+          onClick={() => {
+            setGrid(generateEmptyGrid);
+          }}
+        >
+          clear
+        </button>
+        <button
+          className={`${
+            darkMode ? "btn btn-outline-light" : "btn btn-outline-dark"
+          }`}
+          style={{ margin: "10px" }}
+          onClick={() => {
+            setDarkMode(!darkMode);
+          }}
+        >
+          toggle dark mode
+        </button>
+        <a
+          className={`${
+            darkMode ? "btn btn-outline-light" : "btn btn-outline-dark"
+          }`}
+          style={{ margin: "10px" }}
+          href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+          target="_blank"
+          rel="noreferrer"
+        >
+          about
+        </a>
+      </div>
       <div
         className="App"
         style={{
+          justifyContent: "center",
+          backgroundColor: `${darkMode ? "#282c34" : "white"}`,
           display: "grid",
           gridTemplateColumns: `repeat(${numCols}, 30px)`,
         }}
@@ -96,8 +157,10 @@ function App() {
               style={{
                 width: 30,
                 height: 30,
-                border: "solid 1px #282c34",
-                backgroundColor: grid[i][j] ? "black" : undefined,
+                border: `solid 1px  ${darkMode ? "white" : "#282c34"}`,
+                backgroundColor: grid[i][j]
+                  ? `${darkMode ? "#f5f4f3" : "black"}`
+                  : undefined,
               }}
               onClick={() => {
                 const newGrid = produce(grid, (gridCopy) => {
